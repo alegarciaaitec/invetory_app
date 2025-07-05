@@ -10,13 +10,19 @@ UsuarioDto usuarioDtoFromJson(String str) =>
 String usuarioDtoToJson(UsuarioDto data) => json.encode(data.toJson());
 
 class UsuarioDto {
-  final int? id;
-  final String? email;
-  final String? password;
-  final bool? estado;
-  final DateTime? createdAt;
+  int? id;
+  String email;
+  String? password;
+  bool? estado;
+  DateTime? createdAt;
 
-  UsuarioDto({this.id, this.email, this.password, this.estado, this.createdAt});
+  UsuarioDto({
+    this.id,
+    required this.email,
+    this.password,
+    this.estado,
+    this.createdAt,
+  });
 
   factory UsuarioDto.fromJson(Map<String, dynamic> json) => UsuarioDto(
     id: json["id"],
@@ -35,4 +41,14 @@ class UsuarioDto {
   };
 
   Map<String, dynamic> toJsonPost() => {"email": email, "password": password};
+
+  UsuarioDto copyWith({bool? estado}) {
+    return UsuarioDto(
+      id: id,
+      email: email,
+      password: password,
+      estado: estado ?? this.estado,
+      createdAt: createdAt,
+    );
+  }
 }

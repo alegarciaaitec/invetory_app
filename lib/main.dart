@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:invetory_app/providers/user_provider.dart';
 import 'package:invetory_app/routes/app_router.dart';
-import 'package:invetory_app/screens/user_list_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {

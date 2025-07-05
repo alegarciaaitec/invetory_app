@@ -30,7 +30,7 @@ class UserCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    user.email!,
+                    user.email,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: contentColor,

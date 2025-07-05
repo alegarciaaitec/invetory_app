@@ -33,7 +33,7 @@ class ApiService {
     try {
       final response = await _dio.post(
         '$baseUrl/usuario',
-        data: user.toJson(),
+        data: user.toJsonPost(),
         options: Options(
           headers: {'Content-Type': 'application/json'},
           validateStatus: (status) => status == 201,
@@ -42,6 +42,23 @@ class ApiService {
 
       if (response.statusCode != 201) {
         throw _handleStatusCodeError(response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw 'Error desconocido: ${e.toString()}';
+    }
+  }
+
+  Future<void> deleteUser(int userId) async {
+    try {
+      final response = await _dio.delete(
+        '$baseUrl/usuario/$userId',
+        options: Options(validateStatus: (status) => status == 200),
+      );
+
+      if (response.statusCode != 200) {
+        throw 'Error inesperado: ${response.statusCode}';
       }
     } on DioException catch (e) {
       throw _handleDioError(e);

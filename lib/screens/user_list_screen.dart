@@ -73,8 +73,34 @@ class _UserListScreenState extends State<UserListScreen> {
             color: Colors.blue,
             child: ListView.builder(
               itemCount: provider.users.length,
-              itemBuilder:
-                  (context, index) => UserCard(user: provider.users[index]),
+              itemBuilder: (context, index) {
+                final user = provider.users[index];
+
+                if (user.estado!) {
+                  return Dismissible(
+                    key: Key(user.id.toString()),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      color: Colors.red,
+                      alignment: Alignment.centerRight,
+                      padding: EdgeInsets.only(right: 20),
+                      child: Icon(
+                        Icons.block_rounded,
+                        color: Colors.white,
+                        size: 36,
+                      ),
+                    ),
+                    confirmDismiss:
+                        (direction) =>
+                            _confirmDeactivation(context, user.email),
+                    onDismissed:
+                        (direction) => _handleDeactivation(context, user.id!),
+                    child: UserCard(user: user),
+                  );
+                } else {
+                  return UserCard(user: user);
+                }
+              },
             ),
           );
         },
@@ -82,6 +108,40 @@ class _UserListScreenState extends State<UserListScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _addUser,
         child: Icon(Icons.add_rounded),
+      ),
+    );
+  }
+
+  Future<bool?> _confirmDeactivation(BuildContext context, String email) async {
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Desactivar Usuario'),
+            content: Text('¿Esta seguro que desea desactivar a $email?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text('Desactivar', style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _handleDeactivation(BuildContext context, int userId) {
+    final provider = Provider.of<UserProvider>(context, listen: false);
+    provider.deleteUser(userId);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Usuario desactivado exitosamente'),
+        duration: Duration(seconds: 2),
       ),
     );
   }

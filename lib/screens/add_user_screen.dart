@@ -36,12 +36,93 @@ class _AddUserScreenState extends State<AddUserScreen> {
         listen: false,
       ).createUser(newUser);
 
-      if (mounted) {}
+      if (mounted) {
+        _showSuccessDialog();
+      }
     } catch (e) {
-      if (mounted) {}
+      if (mounted) {
+        _showErrorDialog(e.toString());
+      }
     } finally {
-      if (mounted) {}
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (context) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(Icons.check_circle_rounded, color: Colors.green),
+                SizedBox(width: 10),
+                Text('Exito'),
+              ],
+            ),
+            content: Text('Usuario creado exitosamente.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  context.pop();
+                  context.pop();
+                  Provider.of<UserProvider>(
+                    context,
+                    listen: false,
+                  ).fetchUsers();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _showErrorDialog(String error) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(Icons.error_outline_rounded, color: Colors.red),
+                SizedBox(width: 10),
+                Text('Error'),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('No se puede crear el usuario:'),
+                SizedBox(height: 10),
+                Text(
+                  _simplifyErrorMesssage(error),
+                  style: TextStyle(color: Colors.red),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Aceptar'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  String _simplifyErrorMesssage(String error) {
+    if (error.contains('timeout')) return 'Tiempo de espera agotado';
+    if (error.contains('connection')) return 'Error de conexion';
+    if (error.contains('404')) return 'Recurso no encontrado';
+    if (error.contains('500')) return 'Error interno del servidor';
+    return error;
   }
 
   @override
@@ -100,7 +181,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
               ),
               SizedBox(height: 30),
               ElevatedButton(
-                onPressed: null,
+                onPressed: _isLoading ? null : _submit,
                 child:
                     _isLoading
                         ? SizedBox(

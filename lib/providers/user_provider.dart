@@ -41,4 +41,28 @@ class UserProvider with ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<void> deleteUser(int userId) async {
+    int userIndex = -1;
+    UsuarioDto? originalUser;
+
+    try {
+      userIndex = _users.indexWhere((user) => user.id == userId);
+      if (userIndex == -1) return;
+
+      originalUser = _users[userIndex];
+
+      _users[userIndex] = originalUser.copyWith(estado: false);
+      notifyListeners();
+
+      await _apiService.deleteUser(userId);
+    } catch (e) {
+      if (originalUser != null && userIndex != -1) {
+        _users[userIndex] = originalUser;
+        notifyListeners();
+      }
+
+      rethrow;
+    }
+  }
 }
