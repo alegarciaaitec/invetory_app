@@ -33,4 +33,12 @@ class UserProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> createUser(UsuarioDto user) async {
+    try {
+      await _apiService.createUser(user);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

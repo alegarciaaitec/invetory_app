@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:invetory_app/providers/user_provider.dart';
+import 'package:invetory_app/routes/app_router.dart';
 import 'package:invetory_app/screens/user_list_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => UserProvider(),
-      child: MaterialApp(
+      child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'Gestión de Usuarios',
         theme: ThemeData(
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.grey[100],
           appBarTheme: const AppBarTheme(elevation: 2, centerTitle: true),
         ),
-        home: const UserListScreen(),
+        routerConfig: AppRouter.router,
       ),
     );
   }

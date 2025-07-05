@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:invetory_app/providers/user_provider.dart';
 import 'package:invetory_app/widgets/user_card.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,10 @@ class _UserListScreenState extends State<UserListScreen> {
     await Provider.of<UserProvider>(context, listen: false).fetchUsers();
   }
 
+  void _addUser() {
+    context.push('/add-user');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +34,7 @@ class _UserListScreenState extends State<UserListScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
-            onPressed: () => _loadUsers,
+            onPressed: _loadUsers,
           ),
         ],
       ),
@@ -68,14 +73,14 @@ class _UserListScreenState extends State<UserListScreen> {
             color: Colors.blue,
             child: ListView.builder(
               itemCount: provider.users.length,
-              itemBuilder: (context, index) =>
-                  UserCard(user: provider.users[index]),
+              itemBuilder:
+                  (context, index) => UserCard(user: provider.users[index]),
             ),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: _addUser,
         child: Icon(Icons.add_rounded),
       ),
     );
@@ -116,16 +121,17 @@ class _UserListScreenState extends State<UserListScreen> {
   void _showErrorDetails(String error) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Detalles del error'),
-        content: SingleChildScrollView(child: Text(error)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cerrar'),
+      builder:
+          (context) => AlertDialog(
+            title: Text('Detalles del error'),
+            content: SingleChildScrollView(child: Text(error)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cerrar'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }

@@ -29,6 +29,27 @@ class ApiService {
     }
   }
 
+  Future<void> createUser(UsuarioDto user) async {
+    try {
+      final response = await _dio.post(
+        '$baseUrl/usuario',
+        data: user.toJson(),
+        options: Options(
+          headers: {'Content-Type': 'application/json'},
+          validateStatus: (status) => status == 201,
+        ),
+      );
+
+      if (response.statusCode != 201) {
+        throw _handleStatusCodeError(response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw 'Error desconocido: ${e.toString()}';
+    }
+  }
+
   String _handleDioError(DioException e) {
     if (e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.receiveTimeout ||
