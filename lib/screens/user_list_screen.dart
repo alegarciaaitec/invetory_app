@@ -76,8 +76,12 @@ class _UserListScreenState extends State<UserListScreen> {
               itemBuilder: (context, index) {
                 final user = provider.users[index];
 
-                if (user.estado!) {
-                  return Dismissible(
+                return GestureDetector(
+                  onTap: () {
+                    context.push('/edit-user', extra: user);
+                  },
+                  child: user.estado!
+                   ? Dismissible(
                     key: Key(user.id.toString()),
                     direction: DismissDirection.endToStart,
                     background: Container(
@@ -96,10 +100,9 @@ class _UserListScreenState extends State<UserListScreen> {
                     onDismissed:
                         (direction) => _handleDeactivation(context, user.id!),
                     child: UserCard(user: user),
-                  );
-                } else {
-                  return UserCard(user: user);
-                }
+                  )
+                   : UserCard(user: user)
+                );
               },
             ),
           );
